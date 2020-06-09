@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
 
@@ -31,7 +32,6 @@ const useStyles = theme => ({
 });
 
 class UserMaintainceInputs extends Component {
-
 
    // state handling
    state = {
@@ -94,7 +94,7 @@ class UserMaintainceInputs extends Component {
 
    // on submit of the login form
    handleSubmit = event => {
-      event.preventDefault();
+
       const {
          UserId,
          UserPassword,
@@ -117,7 +117,22 @@ class UserMaintainceInputs extends Component {
             error: "Password do not match"
          })
 
-      } else {
+      } else if (FirstName.length === 0) {
+         this.setState({
+            error: "please fill in the First Name"
+         })
+      } else if (LastName.length === 0) {
+         this.setState({
+            error: "please fill in the LastName"
+         })
+      }
+      else if (UserId.length === 0) {
+         this.setState({
+            error: "User Id Is missing"
+         })
+      }
+
+      else {
          console.log(this.state)
          fetch(" http://10.10.10.198/ABCFARAPI/Api/Users/AddUser ", {
             method: "POST",
@@ -141,17 +156,26 @@ class UserMaintainceInputs extends Component {
             })
 
       }
+      event.preventDefault();
 
    }
+
+
    render() {
       const { classes } = this.props;
       return (
          <div className={classes.root}>
             <CssBaseline />
+
             <form className={classes.form} onSubmit={this.handleSubmit} noValidate>
+               <Grid item xs={12}>
+                  {this.state.error ? (<Paper className={classes.paper} style={{ background: "red", color: "white", padding: "10px" }}>{this.state.error}</Paper>) : null}
+
+               </Grid>
+
                <Grid container spacing={1}>
                   <Grid item xs={12} sm={4}>
-                     {this.state.error !== "" ? (<span>{this.state.error}</span>) : null}
+
                      {this.state.loading ? (<span>Loading...</span>) : null}
                      <paper className={classes.paper}>
                         <TextField
@@ -264,7 +288,6 @@ class UserMaintainceInputs extends Component {
                   </Grid>
                   <Grid item xs={4}></Grid>
                   <Grid item xs={8}>
-                     {this.state.error ? (<span>{this.state.error}</span>) : null}
                      <Button type="submit" variant="contained" className={classes.btn} color="primary" >
                         Add
                       </Button>
